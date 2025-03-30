@@ -6,11 +6,13 @@ export class CreateRecadoDto {
   @MinLength(5)
   @MaxLength(255)
   readonly texto: string;
+
   @IsString()
   @IsNotEmpty()
   @MinLength(2)
   @MaxLength(50)
   readonly de: string;
+
   @IsString()
   @IsNotEmpty()
   @MinLength(2)
