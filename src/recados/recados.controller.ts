@@ -10,6 +10,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { RecadosService } from './recados.service';
 
 // CRUD - Create, Read, Update, Delete
 // Create - POST -> Criar
@@ -23,6 +24,7 @@ import {
 
 @Controller('recados')
 export class RecadosController {
+  constructor(private readonly recadosService: RecadosService) {}
   @HttpCode(HttpStatus.OK)
   @Get()
   findAll(@Query() pagination: any) {
