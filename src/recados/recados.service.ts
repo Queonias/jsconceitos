@@ -45,11 +45,11 @@ export class RecadosService {
     return novoRecado;
   }
 
-  update(id: string, updateRecadoDto: UpdateRecadoDto) {
-    const recadoExistenteIndex = this.recados.findIndex((item) => item.id === +id);
+  update(id: number, updateRecadoDto: UpdateRecadoDto) {
+    const recadoExistenteIndex = this.recados.findIndex((item) => item.id === id);
     if (recadoExistenteIndex < 0) return this.throwNotFoundError();
     if (recadoExistenteIndex >= 0) {
-      const recadoExistenteIndex = this.recados.findIndex((item) => item.id === +id);
+      const recadoExistenteIndex = this.recados.findIndex((item) => item.id === id);
       this.recados[recadoExistenteIndex] = {
         ...this.recados[recadoExistenteIndex],
         ...updateRecadoDto,
@@ -58,8 +58,8 @@ export class RecadosService {
     return this.recados[recadoExistenteIndex];
   }
 
-  remove(id: string) {
-    const recadoExistenteIndex = this.recados.findIndex((item) => item.id === +id);
+  remove(id: number) {
+    const recadoExistenteIndex = this.recados.findIndex((item) => item.id === id);
     if (recadoExistenteIndex < 0) return this.throwNotFoundError();
     if (recadoExistenteIndex >= 0) {
       const recado = this.recados[recadoExistenteIndex];
