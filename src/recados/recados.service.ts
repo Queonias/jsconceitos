@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Recado } from './entities/recado.entity';
 import { CreateRecadoDto } from './dto/create-recado.dto';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
@@ -50,17 +50,19 @@ export class RecadosService {
     return this.recadoRepository.save(recado);
   }
 
-  update(id: number, updateRecadoDto: UpdateRecadoDto) {
-    const recadoExistenteIndex = this.recados.findIndex((item) => item.id === id);
-    if (recadoExistenteIndex < 0) return this.throwNotFoundError();
-    if (recadoExistenteIndex >= 0) {
-      const recadoExistenteIndex = this.recados.findIndex((item) => item.id === id);
-      this.recados[recadoExistenteIndex] = {
-        ...this.recados[recadoExistenteIndex],
-        ...updateRecadoDto,
-      };
-    }
-    return this.recados[recadoExistenteIndex];
+  async update(id: number, updateRecadoDto: UpdateRecadoDto) {
+    const partialUpdateRecadoDto = {
+      lido: updateRecadoDto?.lido,
+      texto: updateRecadoDto?.texto,
+    };
+    const recado = await this.recadoRepository.preload({
+      id,
+      ...partialUpdateRecadoDto,
+    });
+
+    if (!recado) return this.throwNotFoundError();
+
+    return this.recadoRepository.save(recado);
   }
 
   async remove(id: number) {
