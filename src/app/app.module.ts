@@ -13,7 +13,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       host: 'localhost',
       port: 3306,
       username: 'root',
-      database: 'recados',
+      database: 'sqlrecados',
       password: '123456',
       autoLoadEntities: true, // Carrega automaticamente as entidades
       synchronize: true, // Sincroniza o banco de dados com as entidades - Não usar em produção
