@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 
 // CRUD - Create, Read, Update, Delete
@@ -24,7 +25,8 @@ import {
 export class RecadosController {
   @HttpCode(HttpStatus.OK)
   @Get()
-  findAll() {
+  findAll(@Query() pagination: any) {
+    const { limit = 10, offset = 0 } = pagination;
     return 'Essa rota retorna todos os recados';
   }
 
