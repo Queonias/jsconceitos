@@ -3,5 +3,6 @@ export class Recado {
   texto: string;
   de: string;
   lido: boolean;
+  para: string;
   data: Date;
 }

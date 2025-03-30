@@ -11,6 +11,8 @@ import {
   Query,
 } from '@nestjs/common';
 import { RecadosService } from './recados.service';
+import { CreateRecadoDto } from './dto/create-recado.dto';
+import { UpdateRecadoDto } from './dto/update-recado.dto';
 
 // CRUD - Create, Read, Update, Delete
 // Create - POST -> Criar
@@ -21,6 +23,9 @@ import { RecadosService } from './recados.service';
 
 // PATCH - Atualiza apenas uma parte do recurso
 // PUT - Atualiza o recurso inteiro
+
+// DTO - Data Transfer Object -> Objeto de Transferência de Dados
+// DTO - Objeto simples -> validar dados / Transformar dados
 
 @Controller('recados')
 export class RecadosController {
@@ -38,14 +43,13 @@ export class RecadosController {
   }
 
   @Post()
-  create(@Body() body: any) {
-    const { texto, de } = body;
-    return this.recadosService.create(body);
+  create(@Body() createRecadoDto: CreateRecadoDto) {
+    return this.recadosService.create(createRecadoDto);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() body: any) {
-    return this.recadosService.update(id, body);
+  update(@Param('id') id: string, @Body() updateRecadoDto: UpdateRecadoDto) {
+    return this.recadosService.update(id, updateRecadoDto);
   }
 
   @Delete(':id')
