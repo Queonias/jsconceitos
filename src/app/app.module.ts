@@ -5,6 +5,7 @@ import { ConceitosManualModule } from 'src/conceitos-manual/conceitos-manual.mod
 import { ConceitosAutomaticoModule } from 'src/conceitos-automatico/conceitos-automatico.module';
 import { RecadosModule } from 'src/recados/recados.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { PessoasModule } from 'src/pessoas/pessoas.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       synchronize: true, // Sincroniza o banco de dados com as entidades - Não usar em produção
     }),
     RecadosModule,
+    PessoasModule,
   ],
   controllers: [AppController],
   providers: [AppService],
