@@ -21,13 +21,13 @@ export class Recado {
   @ManyToOne(() => Pessoa)
   // Especifica a coluna "de" que armazena o ID da pessoa que enviou o recado
   @JoinColumn({ name: 'de' })
-  de: string;
+  de: Pessoa;
 
   // Muitos recados podem ser enviados para uma única pessoa (destinatário)
   @ManyToOne(() => Pessoa)
   // Especifica a coluna "para" que armazena o ID da pessoa que recebeu o recado
   @JoinColumn({ name: 'para' })
-  para: string;
+  para: Pessoa;
 
   @Column({ default: false })
   lido: boolean;
