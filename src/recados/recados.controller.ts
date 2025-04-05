@@ -20,6 +20,7 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { ParseIntIdPipe } from 'src/common/pipes/parse-int-id.pipe';
 import { AddHeaderInterceptor } from 'src/common/interceptors/add-header.interceptor';
 import { TimingConnectionInterceptor } from 'src/common/interceptors/timing-connection.interceptor';
+import { ErrorHandlerInterceptor } from 'src/common/interceptors/error-handling.interceptor';
 
 // CRUD - Create, Read, Update, Delete
 // Create - POST -> Criar
@@ -36,9 +37,9 @@ import { TimingConnectionInterceptor } from 'src/common/interceptors/timing-conn
 
 @Controller('recados')
 // @UseInterceptors(AddHeaderInterceptor)
+@UseInterceptors(TimingConnectionInterceptor, ErrorHandlerInterceptor)
 export class RecadosController {
   constructor(private readonly recadosService: RecadosService) {}
-  @UseInterceptors(TimingConnectionInterceptor)
   @HttpCode(HttpStatus.OK)
   @Get()
   findAll(@Query() paginationDto: PaginationDto) {
