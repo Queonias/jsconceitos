@@ -21,6 +21,7 @@ import { ParseIntIdPipe } from 'src/common/pipes/parse-int-id.pipe';
 import { AddHeaderInterceptor } from 'src/common/interceptors/add-header.interceptor';
 import { TimingConnectionInterceptor } from 'src/common/interceptors/timing-connection.interceptor';
 import { ErrorHandlerInterceptor } from 'src/common/interceptors/error-handling.interceptor';
+import { SimpleCacheInterceptor } from 'src/common/interceptors/simple-cache.interceptor';
 
 // CRUD - Create, Read, Update, Delete
 // Create - POST -> Criar
@@ -36,8 +37,7 @@ import { ErrorHandlerInterceptor } from 'src/common/interceptors/error-handling.
 // DTO - Objeto simples -> validar dados / Transformar dados
 
 @Controller('recados')
-// @UseInterceptors(AddHeaderInterceptor)
-@UseInterceptors(TimingConnectionInterceptor, ErrorHandlerInterceptor)
+// @UseInterceptors(SimpleCacheInterceptor)
 export class RecadosController {
   constructor(private readonly recadosService: RecadosService) {}
   @HttpCode(HttpStatus.OK)
