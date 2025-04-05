@@ -23,6 +23,7 @@ import { TimingConnectionInterceptor } from 'src/common/interceptors/timing-conn
 import { ErrorHandlerInterceptor } from 'src/common/interceptors/error-handling.interceptor';
 import { SimpleCacheInterceptor } from 'src/common/interceptors/simple-cache.interceptor';
 import { ChangeDataInterceptor } from 'src/common/interceptors/change-data.interceptor';
+import { AuthTohenInterceptor } from 'src/common/interceptors/auth-token.interceptor';
 
 // CRUD - Create, Read, Update, Delete
 // Create - POST -> Criar
@@ -38,7 +39,7 @@ import { ChangeDataInterceptor } from 'src/common/interceptors/change-data.inter
 // DTO - Objeto simples -> validar dados / Transformar dados
 
 @Controller('recados')
-// @UseInterceptors(ChangeDataInterceptor)
+@UseInterceptors(AuthTohenInterceptor)
 export class RecadosController {
   constructor(private readonly recadosService: RecadosService) {}
   @HttpCode(HttpStatus.OK)
