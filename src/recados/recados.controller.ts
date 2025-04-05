@@ -10,6 +10,7 @@ import {
   Patch,
   Post,
   Query,
+  UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
 import { RecadosService } from './recados.service';
@@ -17,6 +18,7 @@ import { CreateRecadoDto } from './dto/create-recado.dto';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { ParseIntIdPipe } from 'src/common/pipes/parse-int-id.pipe';
+import { AddHeaderInterceptor } from 'src/common/interceptors/add-header.interceptor';
 
 // CRUD - Create, Read, Update, Delete
 // Create - POST -> Criar
@@ -32,6 +34,7 @@ import { ParseIntIdPipe } from 'src/common/pipes/parse-int-id.pipe';
 // DTO - Objeto simples -> validar dados / Transformar dados
 
 @Controller('recados')
+@UseInterceptors(AddHeaderInterceptor)
 export class RecadosController {
   constructor(private readonly recadosService: RecadosService) {}
   @HttpCode(HttpStatus.OK)
