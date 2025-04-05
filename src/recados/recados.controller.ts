@@ -19,6 +19,7 @@ import { UpdateRecadoDto } from './dto/update-recado.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { ParseIntIdPipe } from 'src/common/pipes/parse-int-id.pipe';
 import { AddHeaderInterceptor } from 'src/common/interceptors/add-header.interceptor';
+import { TimingConnectionInterceptor } from 'src/common/interceptors/timing-connection.interceptor';
 
 // CRUD - Create, Read, Update, Delete
 // Create - POST -> Criar
@@ -34,9 +35,10 @@ import { AddHeaderInterceptor } from 'src/common/interceptors/add-header.interce
 // DTO - Objeto simples -> validar dados / Transformar dados
 
 @Controller('recados')
-@UseInterceptors(AddHeaderInterceptor)
+// @UseInterceptors(AddHeaderInterceptor)
 export class RecadosController {
   constructor(private readonly recadosService: RecadosService) {}
+  @UseInterceptors(TimingConnectionInterceptor)
   @HttpCode(HttpStatus.OK)
   @Get()
   findAll(@Query() paginationDto: PaginationDto) {
