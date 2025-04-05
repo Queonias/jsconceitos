@@ -39,7 +39,7 @@ import { AuthTohenInterceptor } from 'src/common/interceptors/auth-token.interce
 // DTO - Objeto simples -> validar dados / Transformar dados
 
 @Controller('recados')
-@UseInterceptors(AuthTohenInterceptor)
+// @UseInterceptors(AuthTohenInterceptor)
 export class RecadosController {
   constructor(private readonly recadosService: RecadosService) {}
   @HttpCode(HttpStatus.OK)
