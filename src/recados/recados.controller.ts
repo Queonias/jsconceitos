@@ -25,6 +25,8 @@ import { TimingConnectionInterceptor } from 'src/common/interceptors/timing-conn
 import { SimpleCacheInterceptor } from 'src/common/interceptors/simple-cache.interceptor';
 import { ErrorHandlingInterceptor } from 'src/common/interceptors/error-handling.interceptor';
 import { IsAdminGuard } from 'src/common/guards/is-admin.guard';
+import { UrlParam } from 'src/common/params/url-param.decorator';
+import { ReqDataParam } from 'src/common/params/req-data-param.decorator';
 
 // CRUD - Create, Read, Update, Delete
 // Create - POST -> Criar
@@ -47,7 +49,7 @@ export class RecadosController {
 
   @HttpCode(HttpStatus.OK)
   @Get()
-  async findAll(@Query() paginationDto: PaginationDto) {
+  async findAll(@Query() paginationDto: PaginationDto, @ReqDataParam('headers') url: string) {
     const recados = await this.recadosService.findAll(paginationDto);
     return recados;
   }
