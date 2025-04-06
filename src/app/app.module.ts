@@ -6,6 +6,7 @@ import { ConceitosAutomaticoModule } from 'src/conceitos-automatico/conceitos-au
 import { RecadosModule } from 'src/recados/recados.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PessoasModule } from 'src/pessoas/pessoas.module';
+import { MyExceptionFilter } from 'src/common/filters/my-exception.filter';
 
 @Module({
   imports: [
@@ -23,6 +24,12 @@ import { PessoasModule } from 'src/pessoas/pessoas.module';
     PessoasModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: 'APP_FILTER',
+      useClass: MyExceptionFilter,
+    },
+  ],
 })
 export class AppModule {}

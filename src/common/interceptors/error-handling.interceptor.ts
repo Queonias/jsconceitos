@@ -9,7 +9,7 @@ import {
 import e from 'express';
 import { catchError, Observable, throwError } from 'rxjs';
 
-export class ErrorHandlerInterceptor implements NestInterceptor {
+export class ErrorHandlingInterceptor implements NestInterceptor {
   intercept(
     context: ExecutionContext,
     next: CallHandler<any>,
