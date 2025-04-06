@@ -1,13 +1,11 @@
 import {
-  ArgumentMetadata,
   BadRequestException,
   CallHandler,
   ExecutionContext,
+  Injectable,
   NestInterceptor,
-  PipeTransform,
 } from '@nestjs/common';
-import e from 'express';
-import { catchError, Observable, throwError } from 'rxjs';
+import { catchError, Observable } from 'rxjs';
 
 export class ErrorHandlingInterceptor implements NestInterceptor {
   intercept(
