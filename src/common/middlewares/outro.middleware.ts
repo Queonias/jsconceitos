@@ -6,8 +6,6 @@ import { NextFunction, Request, Response } from 'express';
 
 export class OutroMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
-    console.log('Outro middleware');
-
     // return res.status(404).send({
     //   message: 'Not found',
     // });

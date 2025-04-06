@@ -11,6 +11,7 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
   UseInterceptors,
   UsePipes,
 } from '@nestjs/common';
@@ -23,6 +24,7 @@ import { AddHeaderInterceptor } from 'src/common/interceptors/add-header.interce
 import { TimingConnectionInterceptor } from 'src/common/interceptors/timing-connection.interceptor';
 import { SimpleCacheInterceptor } from 'src/common/interceptors/simple-cache.interceptor';
 import { ErrorHandlingInterceptor } from 'src/common/interceptors/error-handling.interceptor';
+import { IsAdminGuard } from 'src/common/guards/is-admin.guard';
 
 // CRUD - Create, Read, Update, Delete
 // Create - POST -> Criar
@@ -37,6 +39,7 @@ import { ErrorHandlingInterceptor } from 'src/common/interceptors/error-handling
 // DTO - Data Transfer Object -> Objeto de Transferência de Dados
 // DTO - Objeto simples -> validar dados / Transformar dados
 
+@UseGuards(IsAdminGuard)
 @Controller('recados')
 @UseInterceptors(TimingConnectionInterceptor)
 export class RecadosController {

@@ -14,7 +14,6 @@ export class ErrorHandlingInterceptor implements NestInterceptor {
   ): Observable<any> | Promise<Observable<any>> {
     return next.handle().pipe(
       catchError((error) => {
-        console.log('Interceptando erro', error);
         if (error.name === 'NotFoundException') {
           return new BadRequestException(error.message);
         }

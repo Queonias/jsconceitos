@@ -9,6 +9,7 @@ import { PessoasModule } from 'src/pessoas/pessoas.module';
 import { MyExceptionFilter } from 'src/common/filters/my-exception.filter';
 import { SimpleMiddleware } from 'src/common/middlewares/simple.middleware';
 import { OutroMiddleware } from 'src/common/middlewares/outro.middleware';
+import { IsAdminGuard } from 'src/common/guards/is-admin.guard';
 
 @Module({
   imports: [
@@ -32,12 +33,16 @@ import { OutroMiddleware } from 'src/common/middlewares/outro.middleware';
       provide: 'APP_FILTER',
       useClass: MyExceptionFilter,
     },
+    // {
+    //   provide: 'APP_GUARD',
+    //   useClass: IsAdminGuard,
+    // },
   ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(SimpleMiddleware).forRoutes({
-      path: 'recados/*',
+      path: 'recados',
       method: RequestMethod.ALL,
     });
     consumer.apply(OutroMiddleware).forRoutes({

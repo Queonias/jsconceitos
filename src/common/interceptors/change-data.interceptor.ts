@@ -5,8 +5,6 @@ import { map } from 'rxjs';
 export class ChangeDataInterceptor implements NestInterceptor {
   private readonly cache = new Map();
   async intercept(context: ExecutionContext, next: CallHandler<any>) {
-    console.log('ChangeDataInterceptor executado ANTES');
-
     return next.handle().pipe(
       map((data) => {
         if (Array.isArray(data)) {
