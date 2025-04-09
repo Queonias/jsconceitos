@@ -24,7 +24,8 @@ import { RemoveSpacesRegex } from 'src/common/regex/remove-spaces.regex';
     },
     {
       provide: ONLY_LOWERCASE_LETTERS_REGEX,
-      useFactory: (regexFactory: RegexFactory) => {
+      useFactory: async (regexFactory: RegexFactory) => {
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         return regexFactory.create('OnlyLowercaseLettersRegex');
       },
       inject: [RegexFactory],
