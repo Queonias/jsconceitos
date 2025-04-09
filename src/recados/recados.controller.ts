@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -8,32 +7,23 @@ import {
   HttpStatus,
   Inject,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
   Query,
   UseGuards,
   UseInterceptors,
-  UsePipes,
 } from '@nestjs/common';
 import { RecadosService } from './recados.service';
 import { CreateRecadoDto } from './dto/create-recado.dto';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { ParseIntIdPipe } from 'src/common/pipes/parse-int-id.pipe';
-import { AddHeaderInterceptor } from 'src/common/interceptors/add-header.interceptor';
 import { TimingConnectionInterceptor } from 'src/common/interceptors/timing-connection.interceptor';
-import { SimpleCacheInterceptor } from 'src/common/interceptors/simple-cache.interceptor';
-import { ErrorHandlingInterceptor } from 'src/common/interceptors/error-handling.interceptor';
 import { IsAdminGuard } from 'src/common/guards/is-admin.guard';
-import { UrlParam } from 'src/common/params/url-param.decorator';
 import { ReqDataParam } from 'src/common/params/req-data-param.decorator';
-import {
-  ONLY_LOWERCASE_LETTERS_REGEX,
-  REMOVE_SPACES_REGEX,
-  SERVER_NAME,
-} from 'src/recados/recados.constant';
-import { RegexProtocol } from 'src/common/regex/regex.protocol';
+import { RemoveSpacesRegex } from 'src/common/regex/remove-spaces.regex';
+import { In } from 'typeorm';
+import { ONLY_LOWERCASE_LETTERS_REGEX, REMOVE_SPACES_REGEX } from './recados.constant';
+import { OnlyLowercaseLettersRegex } from 'src/common/regex/only-lowercase-letters.regex';
 
 // CRUD - Create, Read, Update, Delete
 // Create - POST -> Criar
@@ -54,19 +44,17 @@ import { RegexProtocol } from 'src/common/regex/regex.protocol';
 export class RecadosController {
   constructor(
     private readonly recadosService: RecadosService,
-    @Inject(SERVER_NAME)
-    private readonly serverName: string,
     @Inject(REMOVE_SPACES_REGEX)
-    private readonly removeSpacesRegex: RegexProtocol,
+    private readonly removeSpacesRegex: RemoveSpacesRegex,
     @Inject(ONLY_LOWERCASE_LETTERS_REGEX)
-    private readonly onlyLowercaseLettersRegex: RegexProtocol,
+    private readonly onlyLowercaseLettersRegex: OnlyLowercaseLettersRegex,
   ) {}
 
   @HttpCode(HttpStatus.OK)
   @Get()
   async findAll(@Query() paginationDto: PaginationDto, @ReqDataParam('headers') url: string) {
-    console.log(this.removeSpacesRegex.execute(this.serverName));
-    console.log(this.onlyLowercaseLettersRegex.execute(this.serverName));
+    console.log(this.removeSpacesRegex.execute('   teste   '));
+    console.log(this.onlyLowercaseLettersRegex.execute('TesteAgora'));
     const recados = await this.recadosService.findAll(paginationDto);
     return recados;
   }
