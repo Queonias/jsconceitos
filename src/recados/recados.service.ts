@@ -13,17 +13,23 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class RecadosService {
+  private count = 0;
   constructor(
     @InjectRepository(Recado)
     private readonly recadoRepository: Repository<Recado>,
     private readonly pessoasService: PessoasService,
-  ) {}
+  ) {
+    this.count++;
+    console.log(`RecadosService foi iniciado ${this.count}`);
+  }
 
   throwNotFoundError() {
     throw new NotFoundException('Recado não encontrado');
   }
 
   async findAll(paginationDto: PaginationDto) {
+    this.count++;
+    console.log(`findAll ${this.count}`);
     const { limit = 10, offset = 0 } = paginationDto;
 
     const recados = await this.recadoRepository.find({
