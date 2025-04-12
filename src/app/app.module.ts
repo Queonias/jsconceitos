@@ -7,8 +7,9 @@ import { PessoasModule } from 'src/pessoas/pessoas.module';
 import { MyExceptionFilter } from 'src/common/filters/my-exception.filter';
 import { SimpleMiddleware } from 'src/common/middlewares/simple.middleware';
 import { OutroMiddleware } from 'src/common/middlewares/outro.middleware';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from '@hapi/joi';
+import appConfig from './app.config';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import * as Joi from '@hapi/joi';
       // envFilePath: '.env',
       // envFilePath: ['env/.env'],
       // ignoreEnvFile: true
+      load: [appConfig],
       validationSchema: Joi.object({
         DATABASE_TYPE: Joi.required(),
         DATABASE_HOST: Joi.required(),
@@ -27,15 +29,21 @@ import * as Joi from '@hapi/joi';
         DATABASE_SYNCHRONIZE: Joi.number().min(0).max(1).default(0),
       }),
     }),
-    TypeOrmModule.forRoot({
-      type: process.env.DATABASE_TYPE as 'mssql',
-      host: process.env.DATABASE_HOST,
-      port: Number(process.env.DATABASE_PORT),
-      username: process.env.DATABASE_USERNAME,
-      database: process.env.DATABASE_DATABASE,
-      password: process.env.DATABASE_PASSWORD,
-      autoLoadEntities: Boolean(process.env.DATABASE_AUTOLOADENTITIES), // Carrega automaticamente as entidades
-      synchronize: Boolean(process.env.DATABASE_SYNCHRONIZE), // Sincroniza o banco de dados com as entidades - Não usar em produção
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => {
+        return {
+          type: configService.get<'mssql'>('database.type'),
+          host: configService.get<string>('database.host'),
+          port: configService.get<number>('database.port'),
+          username: configService.get<string>('database.username'),
+          database: configService.get<string>('database.database'),
+          password: configService.get<string>('database.password'),
+          autoLoadEntities: configService.get<boolean>('database.autoLoadEntities'), // Carrega automaticamente as entidades
+          synchronize: configService.get<boolean>('database.synchronize'), // Sincroniza o banco de dados com as entidades - Não usar em produção
+        };
+      },
     }),
     RecadosModule,
     PessoasModule,
