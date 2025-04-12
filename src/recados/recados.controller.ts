@@ -43,13 +43,7 @@ import { MY_DYNAMIC_CONFIG, MyDynamicModuleConfigs } from 'src/my-dynamic/my-dyn
 @Controller('recados')
 @UseInterceptors(TimingConnectionInterceptor)
 export class RecadosController {
-  constructor(
-    private readonly recadosService: RecadosService,
-    @Inject(MY_DYNAMIC_CONFIG)
-    private readonly myDynamicConfig: MyDynamicModuleConfigs,
-  ) {
-    console.log('RecadosController', this.myDynamicConfig);
-  }
+  constructor(private readonly recadosService: RecadosService) {}
 
   @HttpCode(HttpStatus.OK)
   @Get()

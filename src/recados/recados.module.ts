@@ -7,11 +7,7 @@ import { RecadosUtils } from './recados.utils';
 import { PessoasModule } from 'src/pessoas/pessoas.module';
 import { MyDynamicModule } from 'src/my-dynamic/my-dynamic.module';
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Recado]),
-    forwardRef(() => PessoasModule),
-    MyDynamicModule.register({ apiKey: 'Aqui vem a API KEY', apiUrl: 'http://blblblbl.bla' }),
-  ],
+  imports: [TypeOrmModule.forFeature([Recado]), forwardRef(() => PessoasModule)],
   controllers: [RecadosController],
   providers: [RecadosService, RecadosUtils],
   exports: [RecadosUtils],
