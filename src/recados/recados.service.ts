@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PessoasService } from 'src/pessoas/pessoas.service';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { ConfigService } from '@nestjs/config';
 
 // Scope.DEFAULT -> O provider em questão é um singleton
 // Scope.REQUEST -> O provider em questão é instanciado a cada requisição
@@ -17,7 +18,13 @@ export class RecadosService {
     @InjectRepository(Recado)
     private readonly recadoRepository: Repository<Recado>,
     private readonly pessoasService: PessoasService,
-  ) {}
+    private readonly configService: ConfigService<{
+      DATABASE_USERNAME: string;
+    }>,
+  ) {
+    const databaseUserName = this.configService.get('DATABASE_USERNAME');
+    console.log({ databaseUserName });
+  }
 
   throwNotFoundError() {
     throw new NotFoundException('Recado não encontrado');
