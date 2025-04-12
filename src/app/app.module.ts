@@ -10,18 +10,20 @@ import { MyExceptionFilter } from 'src/common/filters/my-exception.filter';
 import { SimpleMiddleware } from 'src/common/middlewares/simple.middleware';
 import { OutroMiddleware } from 'src/common/middlewares/outro.middleware';
 import { IsAdminGuard } from 'src/common/guards/is-admin.guard';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      database: 'sqlrecados',
-      password: '123456',
-      autoLoadEntities: true, // Carrega automaticamente as entidades
-      synchronize: true, // Sincroniza o banco de dados com as entidades - Não usar em produção
+      type: process.env.DATABASE_TYPE as 'mssql',
+      host: process.env.DATABASE_HOST,
+      port: Number(process.env.DATABASE_PORT),
+      username: process.env.DATABASE_USERNAME,
+      database: process.env.DATABASE_DATABASE,
+      password: process.env.DATABASE_PASSWORD,
+      autoLoadEntities: Boolean(process.env.DATABASE_AUTOLOADENTITIES), // Carrega automaticamente as entidades
+      synchronize: Boolean(process.env.DATABASE_SYNCHRONIZE), // Sincroniza o banco de dados com as entidades - Não usar em produção
     }),
     RecadosModule,
     PessoasModule,

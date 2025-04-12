@@ -5,16 +5,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Pessoa } from './entities/pessoa.entity';
 import { Repository } from 'typeorm';
 
-@Injectable({ scope: Scope.DEFAULT })
+@Injectable()
 export class PessoasService {
-  private count = 0;
   constructor(
     @InjectRepository(Pessoa)
     private readonly pessoaRepository: Repository<Pessoa>,
-  ) {
-    this.count++;
-    console.log(`PessoasService foi iniciado ${this.count}`);
-  }
+  ) {}
 
   async create(createPessoaDto: CreatePessoaDto) {
     try {

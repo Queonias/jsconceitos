@@ -5,7 +5,6 @@ import {
   Get,
   HttpCode,
   HttpStatus,
-  Inject,
   Param,
   Patch,
   Post,
@@ -20,11 +19,6 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { TimingConnectionInterceptor } from 'src/common/interceptors/timing-connection.interceptor';
 import { IsAdminGuard } from 'src/common/guards/is-admin.guard';
 import { ReqDataParam } from 'src/common/params/req-data-param.decorator';
-import { RemoveSpacesRegex } from 'src/common/regex/remove-spaces.regex';
-import { In } from 'typeorm';
-import { ONLY_LOWERCASE_LETTERS_REGEX, REMOVE_SPACES_REGEX } from './recados.constant';
-import { OnlyLowercaseLettersRegex } from 'src/common/regex/only-lowercase-letters.regex';
-import { MY_DYNAMIC_CONFIG, MyDynamicModuleConfigs } from 'src/my-dynamic/my-dynamic.module';
 
 // CRUD - Create, Read, Update, Delete
 // Create - POST -> Criar

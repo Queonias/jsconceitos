@@ -11,25 +11,19 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 // Scope.REQUEST -> O provider em questão é instanciado a cada requisição
 // Scope.TRANSIENT -> É criada uma classe do provider para cada classe que injetar este provider
 
-@Injectable({ scope: Scope.DEFAULT })
+@Injectable()
 export class RecadosService {
-  private count = 0;
   constructor(
     @InjectRepository(Recado)
     private readonly recadoRepository: Repository<Recado>,
     private readonly pessoasService: PessoasService,
-  ) {
-    this.count++;
-    console.log(`RecadosService foi iniciado ${this.count}`);
-  }
+  ) {}
 
   throwNotFoundError() {
     throw new NotFoundException('Recado não encontrado');
   }
 
   async findAll(paginationDto: PaginationDto) {
-    this.count++;
-    console.log(`findAll ${this.count}`);
     const { limit = 10, offset = 0 } = paginationDto;
 
     const recados = await this.recadoRepository.find({
