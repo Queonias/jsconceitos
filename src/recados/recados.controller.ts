@@ -24,6 +24,7 @@ import { RemoveSpacesRegex } from 'src/common/regex/remove-spaces.regex';
 import { In } from 'typeorm';
 import { ONLY_LOWERCASE_LETTERS_REGEX, REMOVE_SPACES_REGEX } from './recados.constant';
 import { OnlyLowercaseLettersRegex } from 'src/common/regex/only-lowercase-letters.regex';
+import { MY_DYNAMIC_CONFIG, MyDynamicModuleConfigs } from 'src/my-dynamic/my-dynamic.module';
 
 // CRUD - Create, Read, Update, Delete
 // Create - POST -> Criar
@@ -44,17 +45,15 @@ import { OnlyLowercaseLettersRegex } from 'src/common/regex/only-lowercase-lette
 export class RecadosController {
   constructor(
     private readonly recadosService: RecadosService,
-    @Inject(REMOVE_SPACES_REGEX)
-    private readonly removeSpacesRegex: RemoveSpacesRegex,
-    @Inject(ONLY_LOWERCASE_LETTERS_REGEX)
-    private readonly onlyLowercaseLettersRegex: OnlyLowercaseLettersRegex,
-  ) {}
+    @Inject(MY_DYNAMIC_CONFIG)
+    private readonly myDynamicConfig: MyDynamicModuleConfigs,
+  ) {
+    console.log('RecadosController', this.myDynamicConfig);
+  }
 
   @HttpCode(HttpStatus.OK)
   @Get()
   async findAll(@Query() paginationDto: PaginationDto, @ReqDataParam('headers') url: string) {
-    console.log(this.removeSpacesRegex.execute('   teste   '));
-    console.log(this.onlyLowercaseLettersRegex.execute('TesteAgora'));
     const recados = await this.recadosService.findAll(paginationDto);
     return recados;
   }
