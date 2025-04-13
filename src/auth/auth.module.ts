@@ -10,5 +10,6 @@ import { BcrypyService } from './hashing/bcrypt.service';
       useClass: BcrypyService,
     },
   ],
+  exports: [HashingService],
 })
 export class AuthModule {}

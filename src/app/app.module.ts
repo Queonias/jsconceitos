@@ -10,6 +10,7 @@ import { OutroMiddleware } from 'src/common/middlewares/outro.middleware';
 import { ConfigModule, ConfigService, ConfigType } from '@nestjs/config';
 import globalConfig from 'src/global-config/global.config';
 import { GlobalConfigModule } from 'src/global-config/global-config.module';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { GlobalConfigModule } from 'src/global-config/global-config.module';
     }),
     RecadosModule,
     PessoasModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [
