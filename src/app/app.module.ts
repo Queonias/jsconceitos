@@ -8,25 +8,25 @@ import { MyExceptionFilter } from 'src/common/filters/my-exception.filter';
 import { SimpleMiddleware } from 'src/common/middlewares/simple.middleware';
 import { OutroMiddleware } from 'src/common/middlewares/outro.middleware';
 import { ConfigModule, ConfigService, ConfigType } from '@nestjs/config';
-import appConfig from './app.config';
+import globalConfig from 'src/global-config/global.config';
+import { GlobalConfigModule } from 'src/global-config/global-config.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({}),
-    ConfigModule.forFeature(appConfig),
+    ConfigModule.forFeature(globalConfig),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule.forFeature(appConfig)],
-      inject: [appConfig.KEY],
-      useFactory: async (appConfigutation: ConfigType<typeof appConfig>) => {
+      imports: [ConfigModule.forFeature(globalConfig), GlobalConfigModule],
+      inject: [globalConfig.KEY],
+      useFactory: async (globalConfigutation: ConfigType<typeof globalConfig>) => {
         return {
-          type: appConfigutation.database.type,
-          host: appConfigutation.database.host,
-          port: appConfigutation.database.port,
-          username: appConfigutation.database.username,
-          database: appConfigutation.database.database,
-          password: appConfigutation.database.password,
-          autoLoadEntities: appConfigutation.database.autoLoadEntities,
-          synchronize: appConfigutation.database.synchronize,
+          type: globalConfigutation.database.type,
+          host: globalConfigutation.database.host,
+          port: globalConfigutation.database.port,
+          username: globalConfigutation.database.username,
+          database: globalConfigutation.database.database,
+          password: globalConfigutation.database.password,
+          autoLoadEntities: globalConfigutation.database.autoLoadEntities,
+          synchronize: globalConfigutation.database.synchronize,
         };
       },
     }),
