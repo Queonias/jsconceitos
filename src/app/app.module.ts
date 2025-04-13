@@ -7,41 +7,26 @@ import { PessoasModule } from 'src/pessoas/pessoas.module';
 import { MyExceptionFilter } from 'src/common/filters/my-exception.filter';
 import { SimpleMiddleware } from 'src/common/middlewares/simple.middleware';
 import { OutroMiddleware } from 'src/common/middlewares/outro.middleware';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import * as Joi from '@hapi/joi';
+import { ConfigModule, ConfigService, ConfigType } from '@nestjs/config';
 import appConfig from './app.config';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      // envFilePath: '.env',
-      // envFilePath: ['env/.env'],
-      // ignoreEnvFile: true
-      load: [appConfig],
-      validationSchema: Joi.object({
-        DATABASE_TYPE: Joi.required(),
-        DATABASE_HOST: Joi.required(),
-        DATABASE_PORT: Joi.number().default(3306),
-        DATABASE_USERNAME: Joi.required(),
-        DATABASE_DATABASE: Joi.required(),
-        DATABASE_PASSWORD: Joi.required(),
-        DATABASE_AUTOLOADENTITIES: Joi.number().min(0).max(1).default(0),
-        DATABASE_SYNCHRONIZE: Joi.number().min(0).max(1).default(0),
-      }),
-    }),
+    ConfigModule.forRoot({}),
+    ConfigModule.forFeature(appConfig),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (configService: ConfigService) => {
+      imports: [ConfigModule.forFeature(appConfig)],
+      inject: [appConfig.KEY],
+      useFactory: async (appConfigutation: ConfigType<typeof appConfig>) => {
         return {
-          type: configService.get<'mssql'>('database.type'),
-          host: configService.get<string>('database.host'),
-          port: configService.get<number>('database.port'),
-          username: configService.get<string>('database.username'),
-          database: configService.get<string>('database.database'),
-          password: configService.get<string>('database.password'),
-          autoLoadEntities: configService.get<boolean>('database.autoLoadEntities'), // Carrega automaticamente as entidades
-          synchronize: configService.get<boolean>('database.synchronize'), // Sincroniza o banco de dados com as entidades - Não usar em produção
+          type: appConfigutation.database.type,
+          host: appConfigutation.database.host,
+          port: appConfigutation.database.port,
+          username: appConfigutation.database.username,
+          database: appConfigutation.database.database,
+          password: appConfigutation.database.password,
+          autoLoadEntities: appConfigutation.database.autoLoadEntities,
+          synchronize: appConfigutation.database.synchronize,
         };
       },
     }),
