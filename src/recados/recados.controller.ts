@@ -19,6 +19,9 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { TimingConnectionInterceptor } from 'src/common/interceptors/timing-connection.interceptor';
 import { IsAdminGuard } from 'src/common/guards/is-admin.guard';
 import { ReqDataParam } from 'src/common/params/req-data-param.decorator';
+import { AuthTokenGuard } from 'src/guards/auth-token.guard';
+import { TokenPayloadParam } from 'src/auth/params/token-payload-param';
+import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
 
 // CRUD - Create, Read, Update, Delete
 // Create - POST -> Criar
@@ -35,7 +38,7 @@ import { ReqDataParam } from 'src/common/params/req-data-param.decorator';
 
 @UseGuards(IsAdminGuard)
 @Controller('recados')
-@UseInterceptors(TimingConnectionInterceptor)
+// @UseInterceptors(TimingConnectionInterceptor)
 export class RecadosController {
   constructor(private readonly recadosService: RecadosService) {}
 
@@ -51,18 +54,28 @@ export class RecadosController {
     return this.recadosService.findOne(id);
   }
 
+  @UseGuards(AuthTokenGuard)
   @Post()
-  create(@Body() createRecadoDto: CreateRecadoDto) {
-    return this.recadosService.create(createRecadoDto);
+  create(
+    @Body() createRecadoDto: CreateRecadoDto,
+    @TokenPayloadParam() tokenPayload: TokenPayloadDto,
+  ) {
+    return this.recadosService.create(createRecadoDto, tokenPayload);
   }
 
+  @UseGuards(AuthTokenGuard)
   @Patch(':id')
-  update(@Param('id') id: number, @Body() updateRecadoDto: UpdateRecadoDto) {
-    return this.recadosService.update(id, updateRecadoDto);
+  update(
+    @Param('id') id: number,
+    @Body() updateRecadoDto: UpdateRecadoDto,
+    @TokenPayloadParam() tokenPayload: TokenPayloadDto,
+  ) {
+    return this.recadosService.update(id, updateRecadoDto, tokenPayload);
   }
 
+  @UseGuards(AuthTokenGuard)
   @Delete(':id')
-  remove(@Param('id') id: number) {
-    return this.recadosService.remove(id);
+  remove(@Param('id') id: number, @TokenPayloadParam() tokenPayload: TokenPayloadDto) {
+    return this.recadosService.remove(id, tokenPayload);
   }
 }
