@@ -7,6 +7,7 @@ import { HashingService } from './hashing/hashing.service';
 import jwtConfig from './config/jwt.config';
 import { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @Injectable()
 export class AuthService {
@@ -19,39 +20,81 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
   async login(loginDto: LoginDto) {
-    let passwordIsValid = false;
-    let throwError = true;
-
     const pessoa = await this.pessoaRepository.findOneBy({
       email: loginDto.email,
     });
 
-    if (pessoa) {
-      passwordIsValid = await this.hashingService.compare(loginDto.password, pessoa.passwordHash);
+    if (!pessoa) {
+      throw new UnauthorizedException('Pessoa não existe.');
     }
 
-    if (passwordIsValid) {
-      throwError = false;
+    const passwordIsValid = await this.hashingService.compare(
+      loginDto.password,
+      pessoa.passwordHash,
+    );
+
+    if (!passwordIsValid) {
+      throw new UnauthorizedException('Senha inválida!');
     }
 
-    if (throwError) {
-      throw new UnauthorizedException('Usuário ou senha inválidos');
-    }
-    const accessToken = await this.jwtService.signAsync(
+    return this.createToken(pessoa);
+  }
+
+  private async createToken(pessoa: Pessoa) {
+    const accessTokenPromise = await this.signJwtAsync<Partial<Pessoa>>(
+      pessoa.id,
+      this.jwtConfiguration.jwtTtl,
+      { email: pessoa.email },
+    );
+
+    const refreshTokenPromise = await this.signJwtAsync(
+      pessoa.id,
+      this.jwtConfiguration.jwtRefreshTtl,
+    );
+
+    const [accessToken, refreshToken] = await Promise.all([
+      accessTokenPromise,
+      refreshTokenPromise,
+    ]);
+
+    return {
+      accessToken,
+      refreshToken,
+    };
+  }
+
+  private async signJwtAsync<T>(sub: number, expiresIn: number, payload?: T) {
+    return await this.jwtService.signAsync(
       {
-        sub: pessoa?.id,
-        email: pessoa?.email,
+        sub,
+        ...payload,
       },
       {
         audience: this.jwtConfiguration.audience,
         issuer: this.jwtConfiguration.issuer,
         secret: this.jwtConfiguration.secret,
-        expiresIn: this.jwtConfiguration.jwtTtl,
+        expiresIn,
       },
     );
+  }
 
-    return {
-      accessToken,
-    };
+  async refreshTokens(refreshTokenDto: RefreshTokenDto) {
+    try {
+      const { sub } = await this.jwtService.verifyAsync(
+        refreshTokenDto.refreshToken,
+        this.jwtConfiguration,
+      );
+
+      const user = await this.pessoaRepository.findOneBy({
+        id: sub,
+      });
+
+      if (!user) {
+        throw new UnauthorizedException('Usuário não encontrado');
+      }
+      return this.createToken(user);
+    } catch (error) {
+      throw new UnauthorizedException(error.message);
+    }
   }
 }
