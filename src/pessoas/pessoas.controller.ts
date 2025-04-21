@@ -23,6 +23,7 @@ export class PessoasController {
     return this.pessoasService.findAll();
   }
 
+  @UseGuards(AuthTokenGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.pessoasService.findOne(+id);
