@@ -13,7 +13,7 @@ import { Repository } from 'typeorm';
 import { HashingService } from 'src/auth/hashing/hashing.service';
 import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
 
-@Injectable()
+@Injectable({ scope: Scope.DEFAULT })
 export class PessoasService {
   constructor(
     @InjectRepository(Pessoa)
@@ -24,29 +24,35 @@ export class PessoasService {
   async create(createPessoaDto: CreatePessoaDto) {
     try {
       const passwordHash = await this.hashingService.hash(createPessoaDto.password);
-      const pessoaData = {
+
+      const dadosPessoa = {
         nome: createPessoaDto.nome,
-        email: createPessoaDto.email,
         passwordHash,
+        email: createPessoaDto.email,
+        routePolicies: createPessoaDto.routePolicies,
+        // routePolicies: createPessoaDto.routePolicies,
       };
-      const pessoa = this.pessoaRepository.create(pessoaData);
-      await this.pessoaRepository.save(pessoa);
-      return pessoa;
+
+      const novaPessoa = this.pessoaRepository.create(dadosPessoa);
+      await this.pessoaRepository.save(novaPessoa);
+      return novaPessoa;
     } catch (error) {
-      if (error.code === 'ER_DUP_ENTRY') {
-        throw new ConflictException('Email já cadastrado');
+      if (error.code === '23505') {
+        throw new ConflictException('E-mail já está cadastrado.');
       }
+
       throw error;
     }
   }
 
   async findAll() {
-    const pessoa = await this.pessoaRepository.find({
+    const pessoas = await this.pessoaRepository.find({
       order: {
-        nome: 'desc',
+        id: 'desc',
       },
     });
-    return pessoa;
+
+    return pessoas;
   }
 
   async findOne(id: number) {
@@ -61,36 +67,37 @@ export class PessoasService {
     return pessoa;
   }
 
-  async update(id: number, updatePessoaDto: UpdatePessoaDto, tokenPayloadParam: TokenPayloadDto) {
+  async update(id: number, updatePessoaDto: UpdatePessoaDto, tokenPayload: TokenPayloadDto) {
     const dadosPessoa = {
-      nome: updatePessoaDto.nome,
+      nome: updatePessoaDto?.nome,
     };
 
     if (updatePessoaDto?.password) {
       const passwordHash = await this.hashingService.hash(updatePessoaDto.password);
+
       dadosPessoa['passwordHash'] = passwordHash;
     }
+
     const pessoa = await this.pessoaRepository.preload({
       id,
       ...dadosPessoa,
     });
+
     if (!pessoa) {
       throw new NotFoundException('Pessoa não encontrada');
     }
 
-    if (pessoa.id !== tokenPayloadParam.sub) {
+    if (pessoa.id !== tokenPayload.sub) {
       throw new ForbiddenException('Você não é essa pessoa.');
     }
+
     return this.pessoaRepository.save(pessoa);
   }
 
-  async remove(id: number, tokenPayloadParam: TokenPayloadDto) {
-    const pessoa = await this.pessoaRepository.findOneBy({ id });
+  async remove(id: number, tokenPayload: TokenPayloadDto) {
+    const pessoa = await this.findOne(id);
 
-    if (!pessoa) {
-      throw new NotFoundException('Pessoa não encontrada');
-    }
-    if (pessoa.id !== tokenPayloadParam.sub) {
+    if (pessoa.id !== tokenPayload.sub) {
       throw new ForbiddenException('Você não é essa pessoa.');
     }
 

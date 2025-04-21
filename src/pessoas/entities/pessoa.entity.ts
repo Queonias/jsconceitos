@@ -1,5 +1,4 @@
 import { IsEmail } from 'class-validator';
-import { RoutePolicies } from 'src/auth/enum/route-policies-enum';
 import { Recado } from 'src/recados/entities/recado.entity';
 import {
   Column,
@@ -19,10 +18,10 @@ export class Pessoa {
   @IsEmail()
   email: string;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ length: 255 })
   passwordHash: string;
 
-  @Column({ type: 'varchar', length: 100 })
+  @Column({ length: 100 })
   nome: string;
 
   @CreateDateColumn()
@@ -31,19 +30,19 @@ export class Pessoa {
   @UpdateDateColumn()
   updatedAt?: Date;
 
-  // Uma pessoa pode enviar muitos recados (como "de")
-  // Esses recados são relacionado ao campo "de" na entidade recado
+  // Uma pessoa pode ter enviado muitos recados (como "de")
+  // Esses recados são relacionados ao campo "de" na entidade recado
   @OneToMany(() => Recado, (recado) => recado.de)
   recadosEnviados: Recado[];
 
   // Uma pessoa pode ter recebido muitos recados (como "para")
-  // Esses recados são relacionado ao campo "para" na entidade recado
+  // Esses recados são relacionados ao campo "para" na entidade recado
   @OneToMany(() => Recado, (recado) => recado.para)
   recadosRecebidos: Recado[];
 
   @Column({ default: true })
   active: boolean;
 
-  @Column({ type: 'simple-array', nullable: false })
-  routePolicies: RoutePolicies[] = [];
+  // @Column({ type: 'simple-array', default: [] })
+  // routePolicies: RoutePolicies[];
 }
