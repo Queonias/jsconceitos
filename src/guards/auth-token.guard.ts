@@ -7,9 +7,12 @@ import {
 } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
 import { REQUEST_TOKEN_PAYLOAD_KEY } from 'src/auth/auth.constants';
 import jwtConfig from 'src/auth/config/jwt.config';
+import { Pessoa } from 'src/pessoas/entities/pessoa.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class AuthTokenGuard implements CanActivate {
@@ -17,6 +20,8 @@ export class AuthTokenGuard implements CanActivate {
     private readonly jwtService: JwtService,
     @Inject(jwtConfig.KEY)
     private readonly jwtConfiguration: ConfigType<typeof jwtConfig>,
+    @InjectRepository(Pessoa)
+    private readonly pessoaRepository: Repository<Pessoa>,
   ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request: Request = context.switchToHttp().getRequest();
@@ -28,9 +33,15 @@ export class AuthTokenGuard implements CanActivate {
 
     try {
       const payload = await this.jwtService.verifyAsync(token, this.jwtConfiguration);
+      const pessoa = await this.pessoaRepository.findOneBy({
+        id: payload.sub,
+        active: true,
+      });
+      if (!pessoa) {
+        throw new UnauthorizedException('Pessoa não autorizada.');
+      }
       request[REQUEST_TOKEN_PAYLOAD_KEY] = payload;
     } catch (error) {
-      console.log('erro');
       throw new UnauthorizedException('Falha ao logar!');
     }
 
