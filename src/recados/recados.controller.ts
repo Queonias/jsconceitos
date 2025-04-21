@@ -9,19 +9,22 @@ import {
   Patch,
   Post,
   Query,
+  SetMetadata,
   UseGuards,
-  UseInterceptors,
 } from '@nestjs/common';
 import { RecadosService } from './recados.service';
 import { CreateRecadoDto } from './dto/create-recado.dto';
 import { UpdateRecadoDto } from './dto/update-recado.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
-import { TimingConnectionInterceptor } from 'src/common/interceptors/timing-connection.interceptor';
 import { IsAdminGuard } from 'src/common/guards/is-admin.guard';
 import { ReqDataParam } from 'src/common/params/req-data-param.decorator';
 import { AuthTokenGuard } from 'src/guards/auth-token.guard';
 import { TokenPayloadParam } from 'src/auth/params/token-payload-param';
 import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
+import { RoutePolicyGuard } from 'src/guards/route-policy.guard';
+import { ROUTE_POLICY_KEY } from 'src/auth/auth.constants';
+import { SetRoutePolicy } from 'src/auth/decorators/set-route-policy.decorator';
+import { RoutePolicies } from 'src/auth/enum/route-policies-enum';
 
 // CRUD - Create, Read, Update, Delete
 // Create - POST -> Criar
@@ -36,7 +39,7 @@ import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
 // DTO - Data Transfer Object -> Objeto de Transferência de Dados
 // DTO - Objeto simples -> validar dados / Transformar dados
 
-@UseGuards(IsAdminGuard)
+@UseGuards(IsAdminGuard, RoutePolicyGuard)
 @Controller('recados')
 // @UseInterceptors(TimingConnectionInterceptor)
 export class RecadosController {
@@ -44,6 +47,8 @@ export class RecadosController {
 
   @HttpCode(HttpStatus.OK)
   @Get()
+  @SetRoutePolicy(RoutePolicies.findAllRecados)
+  // @SetMetadata(ROUTE_POLICY_KEY, 'findAllRecados')
   async findAll(@Query() paginationDto: PaginationDto, @ReqDataParam('headers') url: string) {
     const recados = await this.recadosService.findAll(paginationDto);
     return recados;
