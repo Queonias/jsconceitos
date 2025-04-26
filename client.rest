@@ -1,0 +1,111 @@
+@baseUrl = http://localhost:3000
+@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoidXN1YXJpb0BleGVtcGxvLmNvbSIsImlhdCI6MTc0NTcwNTk3NiwiZXhwIjoxNzQ1NzA5NTc2LCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjMwMDAiLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjMwMDAifQ.5nIfhduTueWcBhg5QE1GpthS8L7TqyMhioENPj5m3b0
+@refreshToken = {{authenticate.response.body.refreshToken}}
+
+# RECADOS
+### Lista todos os recados
+GET {{baseUrl}}/recados/
+?limit=10
+&offset=0
+### Lista apenas um recado
+GET {{baseUrl}}/recados/30/
+### Cria um recado
+POST {{baseUrl}}/recados/
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "texto": "De LUIZ para Joana",
+    "paraId": 12
+}
+### Atualiza um recado
+PATCH {{baseUrl}}/recados/70/
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "texto": "De LUIZ para Joana",
+    "lido": true
+}
+### Apaga um recado
+DELETE {{baseUrl}}/recados/70/
+Authorization: Bearer {{authToken}}
+
+
+#
+
+
+
+# Pessoas
+### Lista todas as pessoas
+GET {{baseUrl}}/pessoas/
+?limit=10
+&offset=0
+Authorization: Bearer {{authToken}}
+### Lista apenas uma pessoa
+GET {{baseUrl}}/pessoas/14/
+Authorization: Bearer {{authToken}}
+### Cria uma pessoa
+POST {{baseUrl}}/pessoas/
+Content-Type: application/json
+
+{
+    "email": "joao2@email.com",
+    "password": "123456",
+    "nome": "João"
+}
+### Atualiza uma pessoa
+PATCH {{baseUrl}}/pessoas/37/
+Authorization: Bearer {{authToken}}
+Content-Type: application/json
+
+{
+    "nome": "JOÃO"
+}
+### Apaga uma pessoa
+DELETE {{baseUrl}}/pessoas/37/
+Authorization: Bearer {{authToken}}
+
+
+
+#
+
+
+
+# AUTH
+### Autenticação
+# @name authenticate
+POST {{baseUrl}}/auth/
+Content-Type: application/json
+
+{
+    "email": "joao2@email.com",
+    "password": "123456"
+}
+### Re-Autenticação
+# @name reAuthenticate
+POST {{baseUrl}}/auth/refresh/
+Content-Type: application/json
+
+{
+    "refreshToken": "{{refreshToken}}"
+}
+
+
+
+#
+
+
+
+# Upload
+### Foto da pessoa
+POST {{baseUrl}}/pessoas/upload-picture/
+Authorization: Bearer {{authToken}}
+Content-Type: multipart/form-data; boundary=----BoundaryDelimitadorHttp
+
+------BoundaryDelimitadorHttp
+Content-Disposition: form-data; name="file"; filename="man.png"
+Content-Type: image/png
+
+< ./dev/images/man.png
+------BoundaryDelimitadorHttp--
