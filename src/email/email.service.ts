@@ -19,10 +19,11 @@ export class EmailService {
 
   async sendEmail(to: string, subject: string, content: string) {
     const mailOptions = {
-      from: process.env.SMTP_USER,
+      from: process.env.EMAIL_FROM,
       to,
       subject,
-      content,
+      // text: content,
+      html: `<p>${content}</p>`, // Use HTML for better formatting
     };
 
     try {
