@@ -9,6 +9,7 @@ import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { ConfigService, ConfigType } from '@nestjs/config';
 import recadosConfig from './recados.config';
 import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
+import { EmailService } from 'src/email/email.service';
 
 // Scope.DEFAULT -> O provider em questão é um singleton
 // Scope.REQUEST -> O provider em questão é instanciado a cada requisição
@@ -22,6 +23,7 @@ export class RecadosService {
     private readonly pessoasService: PessoasService,
     @Inject(recadosConfig.KEY)
     private readonly recadosConfiguration: ConfigType<typeof recadosConfig>,
+    private readonly emailService: EmailService,
   ) {
     console.log(recadosConfiguration.teste1);
   }
@@ -98,6 +100,12 @@ export class RecadosService {
     };
     const recado = this.recadoRepository.create(novoRecado);
     await this.recadoRepository.save(recado);
+
+    await this.emailService.sendEmail(
+      para.email,
+      'Novo recado',
+      `Você recebeu um novo recado de ${de.nome}: ${createRecadoDto.texto}`,
+    );
 
     return {
       ...recado,
