@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:3000
-@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoidXN1YXJpb0BleGVtcGxvLmNvbSIsImlhdCI6MTc0NTcxNDUwNywiZXhwIjoxNzQ1NzE4MTA3LCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjMwMDAiLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjMwMDAifQ.Ghl4oTZFzMCoQSMBoVR3Vsg1-YRyw17UUEZpIp9oSuo
+@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoidXN1YXJpb0BleGVtcGxvLmNvbSIsImlhdCI6MTc0NTc2MDQ1MCwiZXhwIjoxNzQ1NzY0MDUwLCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjMwMDAiLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjMwMDAifQ.k2NsiORyjxMQeX92Kx5TEVm6r4XKj6wcQABbnOK89M8
 @refreshToken = {{authenticate.response.body.refreshToken}}
 
 # RECADOS
@@ -116,4 +116,4 @@ Content-Type: image/png
 ------BoundaryDelimitadorHttp--
 
 ### Ver foto da pessoa
-GET {{baseUrl}}/picture/1.png
+GET {{baseUrl}}/pictures/1.png

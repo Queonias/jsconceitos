@@ -30,6 +30,9 @@ export class Pessoa {
   @UpdateDateColumn()
   updatedAt?: Date;
 
+  @Column({ default: true })
+  picture: string;
+
   // Uma pessoa pode ter enviado muitos recados (como "de")
   // Esses recados são relacionados ao campo "de" na entidade recado
   @OneToMany(() => Recado, (recado) => recado.de)
