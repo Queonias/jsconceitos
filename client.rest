@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:3000
-@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoidXN1YXJpb0BleGVtcGxvLmNvbSIsImlhdCI6MTc0NTcwNTk3NiwiZXhwIjoxNzQ1NzA5NTc2LCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjMwMDAiLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjMwMDAifQ.5nIfhduTueWcBhg5QE1GpthS8L7TqyMhioENPj5m3b0
+@authToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjEsImVtYWlsIjoidXN1YXJpb0BleGVtcGxvLmNvbSIsImlhdCI6MTc0NTcxNDUwNywiZXhwIjoxNzQ1NzE4MTA3LCJhdWQiOiJodHRwOi8vbG9jYWxob3N0OjMwMDAiLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjMwMDAifQ.Ghl4oTZFzMCoQSMBoVR3Vsg1-YRyw17UUEZpIp9oSuo
 @refreshToken = {{authenticate.response.body.refreshToken}}
 
 # RECADOS
@@ -108,4 +108,9 @@ Content-Disposition: form-data; name="file"; filename="man.png"
 Content-Type: image/png
 
 < ./dev/images/man.png
+------BoundaryDelimitadorHttp--
+Content-Disposition: form-data; name="file"; filename="cat.png"
+Content-Type: image/png
+
+< ./dev/images/cat.png
 ------BoundaryDelimitadorHttp--

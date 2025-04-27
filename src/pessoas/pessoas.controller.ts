@@ -31,7 +31,7 @@ import { TokenPayloadParam } from 'src/auth/params/token-payload-param';
 import { TokenPayloadDto } from 'src/auth/dto/token-payload.dto';
 import { PessoaResponseDto } from './dto/response-pessoa.dto'; // vamos criar esse DTO!
 import { AllPessoaResponseDto } from './dto/all-response-pessoa.dto'; // vamos criar esse também!
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import * as path from 'path';
 import { promises as fs } from 'fs';
 import { randomUUID } from 'crypto';
@@ -117,27 +117,39 @@ export class PessoasController {
   }
 
   @UseGuards(AuthTokenGuard)
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FilesInterceptor('file'))
   @Post('upload-picture')
-  // @ApiResponse({ status: 200, type: PessoaResponseDto })
-  @ApiBadRequestResponse({ description: 'Requisição inválida' })
-  // @ApiParam({ name: 'id', description: 'ID da pessoa', example: 1 })
   async uploadPicture(
-    @UploadedFile() file: Express.Multer.File,
-    @TokenPayloadParam() tokenPayloadParam: TokenPayloadDto,
+    @UploadedFiles() files: Array<Express.Multer.File>,
+    @TokenPayloadParam() tokenPayload: TokenPayloadDto,
   ) {
-    const mimetype = file.mimetype;
-    const fileExtension = path.extname(file.originalname).toLowerCase().substring(1);
-    const fileNamme = `${tokenPayloadParam.sub}.${fileExtension}`;
-    const fileFullPath = path.resolve(process.cwd(), 'pictures', fileNamme);
-    await fs.writeFile(fileFullPath, file.buffer);
-    return {
-      fileSize: file.size,
-      fileType: file.mimetype,
-      fileName: file.filename,
-      filePath: file.path,
-      buffer: {},
-      tokenPayload: tokenPayloadParam,
-    };
+    const result: string[] = [];
+    files.forEach(async (file) => {
+      const fileExtension = path.extname(file.originalname).toLowerCase().substring(1);
+      const fileName = `${randomUUID()}.${fileExtension}`;
+      const fileFullPath = path.resolve(process.cwd(), 'pictures', fileName);
+
+      result.push(fileFullPath);
+
+      await fs.writeFile(fileFullPath, file.buffer);
+    });
+
+    return result;
+    // const fileExtension = path
+    //   .extname(file.originalname)
+    //   .toLowerCase()
+    //   .substring(1);
+    // const fileName = `${tokenPayload.sub}.${fileExtension}`;
+    // const fileFullPath = path.resolve(process.cwd(), 'pictures', fileName);
+
+    // await fs.writeFile(fileFullPath, file.buffer);
+
+    // return {
+    //   fieldname: file.fieldname,
+    //   originalname: file.originalname,
+    //   mimetype: file.mimetype,
+    //   buffer: {},
+    //   size: file.size,
+    // };
   }
 }
