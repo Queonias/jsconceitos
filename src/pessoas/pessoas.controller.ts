@@ -12,6 +12,9 @@ import {
   UseInterceptors,
   UploadedFiles,
   UploadedFile,
+  BadRequestException,
+  HttpStatus,
+  ParseFilePipeBuilder,
 } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
@@ -117,39 +120,40 @@ export class PessoasController {
   }
 
   @UseGuards(AuthTokenGuard)
-  @UseInterceptors(FilesInterceptor('file'))
+  @UseInterceptors(FileInterceptor('file'))
   @Post('upload-picture')
   async uploadPicture(
-    @UploadedFiles() files: Array<Express.Multer.File>,
+    @UploadedFile(
+      new ParseFilePipeBuilder()
+        .addFileTypeValidator({
+          fileType: /jpeg|jpg|png/g,
+        })
+        .addMaxSizeValidator({
+          maxSize: 10 * (1024 * 1024),
+        })
+        .build({
+          errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+        }),
+    )
+    file: Express.Multer.File,
     @TokenPayloadParam() tokenPayload: TokenPayloadDto,
   ) {
-    const result: string[] = [];
-    files.forEach(async (file) => {
-      const fileExtension = path.extname(file.originalname).toLowerCase().substring(1);
-      const fileName = `${randomUUID()}.${fileExtension}`;
-      const fileFullPath = path.resolve(process.cwd(), 'pictures', fileName);
+    if (file.size < 1024) {
+      throw new BadRequestException('File too small');
+    }
 
-      result.push(fileFullPath);
+    const fileExtension = path.extname(file.originalname).toLowerCase().substring(1);
+    const fileName = `${tokenPayload.sub}.${fileExtension}`;
+    const fileFullPath = path.resolve(process.cwd(), 'pictures', fileName);
 
-      await fs.writeFile(fileFullPath, file.buffer);
-    });
+    await fs.writeFile(fileFullPath, file.buffer);
 
-    return result;
-    // const fileExtension = path
-    //   .extname(file.originalname)
-    //   .toLowerCase()
-    //   .substring(1);
-    // const fileName = `${tokenPayload.sub}.${fileExtension}`;
-    // const fileFullPath = path.resolve(process.cwd(), 'pictures', fileName);
-
-    // await fs.writeFile(fileFullPath, file.buffer);
-
-    // return {
-    //   fieldname: file.fieldname,
-    //   originalname: file.originalname,
-    //   mimetype: file.mimetype,
-    //   buffer: {},
-    //   size: file.size,
-    // };
+    return {
+      fieldname: file.fieldname,
+      originalname: file.originalname,
+      mimetype: file.mimetype,
+      buffer: {},
+      size: file.size,
+    };
   }
 }
